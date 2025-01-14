@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Penal</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+        }
+
+        .container {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .tabs button {
+            font-size: 18px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .tabs button:hover {
+            background-color: #0056b3;
+        }
+
+        .tabs .active {
+            background-color: #0056b3;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: #74ebd5;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #444;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .totals-container {
+            margin-top: 30px;
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .total-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .total-item span {
+            flex: 1;
+        }
+
+        .total-item .remove-btn {
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
+        }
+
+        .copy-btn {
+            margin-top: 20px;
+            width: 100%;
+            background-color: #28a745;
+        }
+
+        .copy-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora Penal</h1>
+
+        <div class="tabs">
+            <button id="tabMunicao" class="active" onclick="showTab('municao')">Munição</button>
+            <button id="tabItens" onclick="showTab('itens')">Itens Ilegais</button>
+            <button id="tabTotais" onclick="showTab('totais')">Totais</button>
+        </div>
+
+        <div id="municao" class="section active">
+            <label for="quantity">Quantidade de Munições:</label>
+            <input type="number" id="quantity" placeholder="Digite a quantidade" min="0">
+
+            <label for="class">Selecione a Classe:</label>
+            <select id="class">
+                <option value="500" data-class-name="Classe 1">Classe 1</option>
+                <option value="1000" data-class-name="Classe 2">Classe 2</option>
+                <option value="1500" data-class-name="Classe 3">Classe 3</option>
+            </select>
+
+            <button onclick="calculatePenalty('municao')">Calcular</button>
+
+            <div class="result" id="resultMunicao">O resultado será exibido aqui</div>
+        </div>
+
+        <div id="itens" class="section">
+            <label for="item">Escolha o Item:</label>
+            <select id="item">
+                <option value="600">Artigos de joalheria / Bens de assalto a casa - €600</option>
+                <option value="750">Algemas / Lockpick / C4 / Minérios - €750</option>
+                <option value="1000">Lockpick avançada / Esquemas de armas / Rebarbadora - €1000</option>
+                <option value="1500">Coral / Estanho / Pepitas de ouro / Kevlar - €1500</option>
+                <option value="1750">Chifres / Pólvora / Safiras / Nitro / Barras de ouro - €1750</option>
+                <option value="2500">Medickits / Moldes de armas - €2500</option>
+                <option value="5000">Peças de armamento / Acessórios para arma / Diamantes - €5000</option>
+                <option value="10000">Coletes - €10000</option>
+            </select>
+
+            <label for="customItem">Nome do Item:</label>
+            <input type="text" id="customItem" placeholder="Insira o nome do item" />
+
+            <label for="quantityItens">Quantidade:</label>
+            <input type="number" id="quantityItens" placeholder="Quantidade de artigos" min="0">
+
+            <button onclick="calculatePenalty('itens')">Calcular Penalização</button>
+
+            <div class="result" id="resultItens">O resultado será exibido aqui</div>
+        </div>
+
+        <div id="totais" class="section">
+            <div class="totals-container" id="totalsContainer"></div>
+            <button class="copy-btn" onclick="copyResults()">Copiar Todos</button>
+        </div>
+    </div>
+
+    <script>
+        let results = [];
+
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.section');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+
+            const buttons = document.querySelectorAll('.tabs button');
+            buttons.forEach(button => button.classList.remove('active'));
+            document.getElementById(`tab${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`).classList.add('active');
+        }
+
+        function calculatePenalty(section) {
+            let resultText = '';
+
+            if (section === 'municao') {
+                const quantity = parseInt(document.getElementById('quantity').value);
+                const selectedClass = document.getElementById('class');
+                const penaltyPerUnit = parseInt(selectedClass.value);
+                const className = selectedClass.options[selectedClass.selectedIndex].dataset.className;
+
+                if (isNaN(quantity) || quantity < 0) {
+                    document.getElementById('resultMunicao').innerText = "Por favor, insira uma quantidade válida.";
+                    return;
+                }
+
+                const totalPenalty = quantity * penaltyPerUnit;
+                const formattedPenalty = totalPenalty.toLocaleString('pt-BR').replace(',', '.') + '€';
+
+                resultText = `Posse de munição (${className}) ${quantity} x €${penaltyPerUnit} = ${formattedPenalty}`;
+                document.getElementById('resultMunicao').innerText = resultText;
+
+            } else if (section === 'itens') {
+                const itemPrice = parseInt(document.getElementById('item').value);
+                const quantity = parseInt(document.getElementById('quantityItens').value) || 0;
+                const customItemName = document.getElementById('customItem').value.trim();
+
+                if (quantity <= 0) {
+                    document.getElementById('resultItens').innerText = "Por favor, insira uma quantidade válida.";
+                    return;
+                }
+
+                const itemName = customItemName || document.getElementById('item').options[document.getElementById('item').selectedIndex].text.split(' -')[0];
+                const totalPrice = itemPrice * quantity;
+                const formattedPrice = totalPrice.toLocaleString('pt-BR').replace(',', '.') + '€';
+
+                resultText = `Posse de itens ilegais (${itemName}) ${quantity} x €${itemPrice} = ${formattedPrice}`;
+                document.getElementById('resultItens').innerText = resultText;
+            }
+
+            results.push(resultText);
+            displayTotals();
+        }
+
+        function displayTotals() {
+            const totalsContainer = document.getElementById('totalsContainer');
+            totalsContainer.innerHTML = '';
+
+            let totalAmount = 0;
+
+            results.forEach((result, index) => {
+                const resultElement = document.createElement('div');
+                resultElement.className = 'total-item';
+                resultElement.innerHTML = ` 
+                    <span>${result}</span>
+                    <span class="remove-btn" onclick="removeResult(${index})">🗑️</span>
+                `;
+                totalsContainer.appendChild(resultElement);
+
+                const match = result.match(/(\d+\.\d{3})€/);
+                if (match) {
+                    totalAmount += parseFloat(match[1].replace('.', '').replace(',', '.'));
+                }
+            });
+
+            const totalText = `Total - ${results.map(r => {
+                const match = r.match(/(\d+\.\d{3})€/);
+                return match ? match[0] : '';
+            }).join(' + ')} = ${totalAmount.toLocaleString('pt-BR').replace(',', '.') + '€'}`;
+
+            const totalElement = document.createElement('div');
+            totalElement.className = 'total-item';
+            totalElement.innerHTML = `<strong>${totalText}</strong>`;
+            totalsContainer.appendChild(totalElement);
+        }
+
+        function removeResult(index) {
+            results.splice(index, 1);
+            displayTotals();
+        }
+
+        function copyResults() {
+            const allResults = results.join('\n');
+            const totalAmount = results.reduce((total, result) => {
+                const match = result.match(/(\d+\.\d{3})€/);
+                if (match) {
+                    return total + parseFloat(match[1].replace('.', '').replace(',', '.'));
+                }
+                return total;
+            }, 0);
+            const totalText = `Total - ${results.map(r => {
+                const match = r.match(/(\d+\.\d{3})€/);
+                return match ? match[0] : '';
+            }).join(' + ')} = ${totalAmount.toLocaleString('pt-BR').replace(',', '.') + '€'}`;
+
+            const fullText = `${allResults}\n\n${totalText}`;
+            const textarea = document.createElement('textarea');
+            textarea.value = fullText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+    </script>
+</body>
+</html>
